@@ -1,5 +1,6 @@
 
-$ErrorActionPreference = "Stop"
+# https://stackoverflow.com/a/9949105
+# $ErrorActionPreference = "Stop"
 
 $versaoRaven = "5.0.2"
 
