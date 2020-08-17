@@ -23,6 +23,8 @@ timeout 3
 Write-Host "Extraindo arquivos"
 Expand-Archive "c:\ravendb\_download.zip" -DestinationPath "c:\ravendb" -Force
 
+[System.Environment]::SetEnvironmentVariable('RAVEN_Http_Protocols', 'Http1', [System.EnvironmentVariableTarget]::Machine)
+
 Write-Host "Iniciando RavenDB"
 net start ravendb
 
