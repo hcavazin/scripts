@@ -33,8 +33,6 @@ if (!(Test-Path "c:\ravendb")) {
     New-Item "c:\ravendb" -ItemType Directory
 }
 
-Set-Location "c:\ravendb"
-
 Write-Host "Baixando RavenDB..."
 Invoke-WebRequest "https://daily-builds.s3.amazonaws.com/RavenDB-$versaoRaven-windows-x64.zip" -OutFile "c:\ravendb\_download.zip"
 
