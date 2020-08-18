@@ -36,7 +36,7 @@ if (!(Test-Path "c:\ravendb")) {
 Set-Location "c:\ravendb"
 
 Write-Host "Baixando RavenDB..."
-Invoke-WebRequest "https://daily-builds.s3.amazonaws.com/RavenDB-$versaoRaven-windows-x64.zip" -OutFile "_download.zip"
+Invoke-WebRequest "https://daily-builds.s3.amazonaws.com/RavenDB-$versaoRaven-windows-x64.zip" -OutFile "c:\ravendb\_download.zip"
 
 Write-Host "Parando Zins Processor..."
 taskkill /F /T /IM ZinsProcessor.exe
