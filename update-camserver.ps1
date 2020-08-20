@@ -19,4 +19,4 @@ Expand-Archive "C:\Zins\ZinsCamServer\_download.zip" "C:\Zins\ZinsCamServer" -Fo
 Write-Host "Iniciando CamServer..."
 net start ZinsCamServer
 
-Start-Process "https://localhost:9981/home/versao"
+Start-Process "http://localhost:9981/home/versao"
