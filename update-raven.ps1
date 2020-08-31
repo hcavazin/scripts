@@ -9,7 +9,7 @@ if (!(Test-Path "c:\ravendb")) {
 }
 
 Write-Host "Baixando RavenDB..."
-Invoke-WebRequest "https://daily-builds.s3.amazonaws.com/RavenDB-$versaoRaven-windows-x64.zip" -OutFile "c:\ravendb\_download.zip"
+Invoke-WebRequest "https://daily-builds.s3.amazonaws.com/RavenDB-$versaoRaven-windows-x64.zip" -UseBasicParsing -OutFile "c:\ravendb\_download.zip"
 
 Write-Host "Parando Zins Processor..."
 taskkill /F /T /IM ZinsProcessor.exe
@@ -29,5 +29,9 @@ net start ravendb
 
 Write-Host "Iniciando Zins Processor..."
 Start-Process "$env:LOCALAPPDATA\ZinsProcessor2\ZinsProcessor.exe"
+
+Write-Host "Baixando scripts..."
+Invoke-WebRequest "https://raw.githubusercontent.com/hcavazin/scripts/master/adicionar-no-update.zip" -UseBasicParsing -OutFile "c:\ravendb\adicionar-no-update.zip"
+Expand-Archive "c:\ravendb\adicionar-no-update.zip" "c:\ravendb" -Force
 
 Start-Process "https://a.generic.ravendb.zinsc.com:883/studio/index.html#databases/documents?&database=Zins2"

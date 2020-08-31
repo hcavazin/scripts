@@ -7,7 +7,7 @@ if (!(Test-Path "C:\Zins\ZinsCamServer")) {
 }
 
 Write-Host "Baixando CamServer..."
-Invoke-WebRequest "http://f.zins.com.br/updates/zins/ZinsCamServer.zip" -OutFile "C:\Zins\ZinsCamServer\_download.zip"
+Invoke-WebRequest "http://f.zins.com.br/updates/zins/ZinsCamServer.zip" -UseBasicParsing -OutFile "C:\Zins\ZinsCamServer\_download.zip"
 
 Write-Host "Parando CamServer..."
 net stop ZinsCamServer
