@@ -31,7 +31,7 @@ Write-Host "Iniciando Zins Processor..."
 Start-Process "$env:LOCALAPPDATA\ZinsProcessor2\ZinsProcessor.exe"
 
 Write-Host "Baixando scripts..."
-Invoke-WebRequest "https://raw.githubusercontent.com/hcavazin/scripts/master/adicionar-no-update.zip" -UseBasicParsing -OutFile "c:\ravendb\adicionar-no-update.zip"
-Expand-Archive "c:\ravendb\adicionar-no-update.zip" "c:\ravendb" -Force
+Invoke-WebRequest "https://raw.githubusercontent.com/hcavazin/scripts/master/adicionar-no-update.zip" -UseBasicParsing -OutFile "c:\ravendb\_adicionar-no-update.zip"
+Expand-Archive "c:\ravendb\_adicionar-no-update.zip" "c:\ravendb" -Force
 
 Start-Process "https://a.generic.ravendb.zinsc.com:883/studio/index.html#databases/documents?&database=Zins2"
