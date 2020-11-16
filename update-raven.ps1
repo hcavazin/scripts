@@ -2,7 +2,7 @@
 # https://stackoverflow.com/a/9949909/4862220
 # $ErrorActionPreference = "Stop"
 
-$versaoRaven = "5.0.4"
+$versaoRaven = "5.0.5"
 
 if (!(Test-Path "c:\ravendb")) {
     New-Item "c:\ravendb" -ItemType Directory
