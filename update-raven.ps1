@@ -3,6 +3,7 @@
 # $ErrorActionPreference = "Stop"
 
 $versaoRaven = "5.1.0"
+Write-Host "Versao RavenDB: $versaoRaven"
 
 if (!(Test-Path "c:\ravendb")) {
     New-Item "c:\ravendb" -ItemType Directory
