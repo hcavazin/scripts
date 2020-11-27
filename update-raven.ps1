@@ -20,6 +20,10 @@ net stop ravendb
 taskkill /F /T /IM Raven.Server.exe
 timeout 3
 
+# https://stackoverflow.com/a/52143053/4862220
+Write-Host "Removendo arquivos antigos..."
+Get-ChildItem "C:\ravendb\Server" -Exclude settings.json, *.pfx, RavenData, Logs, Packages | Remove-Item -Force -Recurse
+
 Write-Host "Extraindo arquivos..."
 Expand-Archive "c:\ravendb\_download.zip" "c:\ravendb" -Force
 
