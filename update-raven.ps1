@@ -2,7 +2,7 @@
 # https://stackoverflow.com/a/9949909/4862220
 # $ErrorActionPreference = "Stop"
 
-$versaoRaven = "5.1.0"
+$versaoRaven = "5.1.1"
 Write-Host "Versao RavenDB: $versaoRaven"
 
 if (!(Test-Path "c:\ravendb")) {
