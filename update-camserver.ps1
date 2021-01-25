@@ -2,6 +2,8 @@
 # https://stackoverflow.com/a/9949909/4862220
 # $ErrorActionPreference = "Stop"
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 if (!(Test-Path "C:\Zins\ZinsCamServer")) {
     New-Item "C:\Zins\ZinsCamServer" -ItemType Directory
 }

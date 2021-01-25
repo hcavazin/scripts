@@ -5,6 +5,8 @@
 $versaoRaven = "5.1.3"
 Write-Host "Versao RavenDB: $versaoRaven"
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 if (!(Test-Path "c:\ravendb")) {
     New-Item "c:\ravendb" -ItemType Directory
 }
