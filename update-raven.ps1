@@ -2,7 +2,7 @@
 # https://stackoverflow.com/a/9949909/4862220
 # $ErrorActionPreference = "Stop"
 
-$versaoRaven = "5.1.4"
+$versaoRaven = "5.1.5"
 Write-Host "Versao RavenDB: $versaoRaven"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
