@@ -13,10 +13,16 @@ Invoke-WebRequest "http://f.zins.com.br/updates/zins/ZinsCamServer.zip" -UseBasi
 
 Write-Host "Parando CamServer..."
 net stop ZinsCamServer
+
+# Write-Host "Parando nginx..."
+# taskkill /IM "nginx.exe" /F
+
 timeout 3
 
 Write-Host "Extraindo arquivos..."
-Expand-Archive "C:\Zins\ZinsCamServer\_download.zip" "C:\Zins\ZinsCamServer" -Force
+Expand-Archive "C:\Zins\ZinsCamServer\_download.zip" "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" -Force
+xcopy "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" "C:\Zins\ZinsCamServer" /s/q/d
+Remove-Item "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" -Recurse -Force
 
 Write-Host "Iniciando CamServer..."
 net start ZinsCamServer
