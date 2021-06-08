@@ -21,6 +21,8 @@ timeout 3
 
 Write-Host "Extraindo arquivos..."
 Expand-Archive "C:\Zins\ZinsCamServer\_download.zip" "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" -Force
+Remove-Item "C:\Zins\ZinsCamServer\*.dll"
+Remove-Item "C:\Zins\ZinsCamServer\*.exe"
 xcopy "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" "C:\Zins\ZinsCamServer" /q/d/s/y
 Remove-Item "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" -Recurse -Force
 
