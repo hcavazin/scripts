@@ -2,7 +2,7 @@
 # https://stackoverflow.com/a/9949909/4862220
 # $ErrorActionPreference = "Stop"
 
-$versaoRaven = "5.1.11"
+$versaoRaven = "5.2.3"
 Write-Host "Versao RavenDB: $versaoRaven"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -30,6 +30,7 @@ Write-Host "Extraindo arquivos..."
 Expand-Archive "c:\ravendb\_download.zip" "c:\ravendb" -Force
 
 [System.Environment]::SetEnvironmentVariable('RAVEN_Http_Protocols', 'Http1', [System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('RAVEN_Security_Certificate_Validation_KeyUsages', 'false', [System.EnvironmentVariableTarget]::Machine)
 
 Write-Host "Iniciando RavenDB..."
 net start ravendb
