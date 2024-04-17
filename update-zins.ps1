@@ -1,8 +1,12 @@
 
-param (
-    [Parameter(Mandatory=$true)]
-    [string]$Version
-)
+# exemplo de como chamar o script
+# $Version = "1.2.3.4"; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest https://raw.githubusercontent.com/hcavazin/scripts/master/update-zins.ps1 -UseBasicParsing | Invoke-Expression;
+
+# verificar se variavel $Version foi definida, se nao foi exibir mensagem e parar execucao do script
+if (-not $Version) {
+    Write-Host "Variável 'Version' não está definida. Por favor, defina-a antes de executar este script."
+    return
+}
 
 # stop on error
 $ErrorActionPreference = "Stop"
