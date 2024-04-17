@@ -70,7 +70,10 @@ Invoke-WebRequest -Uri $baseUrlCamServer -OutFile $downloadPathCamServer
 
 
 # rodar comando "Stop-Service -Name ZinsCamServer" como administrador
-Start-Process powershell -Verb RunAs -ArgumentList "-Command Stop-Service -Name ZinsCamServer"
+Stop-Service -Name ZinsCamServer
+
+# pegar todos os processos nginx.exe que estão na pasta C:\Zins\, imprimir caminho completo dos processos e matar
+Get-Process | Where-Object { $_.ProcessName -eq 'nginx' -and $_.Path -like 'C:\Zins\*' } | ForEach-Object { Write-Host $_.Path; Stop-Process -Id $_.Id -Force }
 
 # extrair arquivos
 & $7zaPath x $downloadPathTransceiver -o"C:\Zins" -y
@@ -79,7 +82,7 @@ Start-Process powershell -Verb RunAs -ArgumentList "-Command Stop-Service -Name 
 & $7zaPath x $downloadPathCamServer -o"C:\Zins" -y
 
 # rodar comando "Start-Service -Name ZinsCamServer" como administrador
-Start-Process powershell -Verb RunAs -ArgumentList "-Command Start-Service -Name ZinsCamServer"
+Start-Service -Name ZinsCamServer
 
 
 # remover arquivos baixados
