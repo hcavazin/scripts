@@ -10,6 +10,9 @@ $ErrorActionPreference = "Stop"
 # ir para diretorio C:\Zins
 Set-Location C:\Zins
 
+# write info
+Write-Host "Updating Zins to version $Version"
+
 # baixar 7za
 $7zaUrl = "https://zinspublic.blob.core.windows.net/updates/utils/7za_x64.exe"
 $7zaPath = "C:\Zins\7za.exe"
