@@ -1,6 +1,10 @@
 
-# exemplo de como chamar o script
+# exemplos de como chamar o script
+
 # $Version = "1.2.3.4"; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest https://raw.githubusercontent.com/hcavazin/scripts/master/update-zins.ps1 -UseBasicParsing | Invoke-Expression;
+
+# $Version = "1.2.3.4"; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest http://127.0.0.1:5500//update-zins.ps1 -UseBasicParsing | Invoke-Expression;
+
 
 # verificar se variavel $Version foi definida, se nao foi exibir mensagem e parar execucao do script
 if (-not $Version) {
@@ -10,6 +14,9 @@ if (-not $Version) {
 
 # stop on error
 $ErrorActionPreference = "Stop"
+
+# baixar arquivo https://raw.githubusercontent.com/hcavazin/scripts/master/index.html
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/hcavazin/scripts/master/index.html" -OutFile "C:\Zins\index.html"
 
 # ir para diretorio C:\Zins
 Set-Location C:\Zins
