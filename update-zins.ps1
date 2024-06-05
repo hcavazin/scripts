@@ -83,17 +83,17 @@ if (Get-Service -Name ZinsCamServer -ErrorAction SilentlyContinue) {
 # pegar todos os processos nginx.exe que estão na pasta C:\Zins\, imprimir caminho completo dos processos e matar
 Get-Process | Where-Object { $_.ProcessName -eq 'nginx' -and $_.Path -like 'C:\Zins\*' } | ForEach-Object { Write-Host $_.Path; Stop-Process -Id $_.Id -Force }
 
-# remover arquivo ZinsCamServer\ZinsCamServerProxy.runtimeconfig.json
-$runtimeConfigPath = "C:\Zins\ZinsCamServer\ZinsCamServerProxy.runtimeconfig.json"
-if (Test-Path $runtimeConfigPath) {
-    Remove-Item -Path $runtimeConfigPath -Force
-}
-
 # extrair arquivos
 & $7zaPath x $downloadPathTransceiver -o"C:\Zins" -y
 & $7zaPath x $downloadPathProcessor -o"C:\Zins" -y
 & $7zaPath x $downloadPathWorkstation -o"C:\Zins" -y
 & $7zaPath x $downloadPathCamServer -o"C:\Zins" -y
+
+# remover arquivo ZinsCamServer\ZinsCamServerProxy.runtimeconfig.json
+$runtimeConfigPath = "C:\Zins\ZinsCamServer\ZinsCamServerProxy.runtimeconfig.json"
+if (Test-Path $runtimeConfigPath) {
+    Remove-Item -Path $runtimeConfigPath -Force
+}
 
 # Start ZinsCamServer service if it is not running
 if (Get-Service -Name ZinsCamServer -ErrorAction SilentlyContinue) {
