@@ -129,53 +129,27 @@ if (-not (Test-Path $appcmd))
     throw "Não foi encontrado '$appcmd'. O IIS (Web Server) e suas ferramentas não parecem instalados."
 }
 
-# Local do appcmd.exe
-$appcmd = Join-Path $env:windir 'System32\inetsrv\appcmd.exe'
-if (-not (Test-Path $appcmd))
-{
-    throw "Não foi encontrado '$appcmd'. O IIS (Web Server) e suas ferramentas não parecem instalados."
-}
+# (Opcional) garantir que a seção não está bloqueada para sites
+ & $appcmd unlock config -section:system.webServer/httpCompression
 
-function Run-AppCmd
-{
-    param([Parameter(Mandatory)][string[]]$Args)
+# Adicionar tipos estáticos (sem duplicar)
+& $appcmd set config -section:httpCompression /-"staticTypes.[mimeType='application/octet-stream']" /commit:apphost
+& $appcmd set config -section:httpCompression /+"staticTypes.[mimeType='application/octet-stream',enabled='true']" /commit:apphost
 
-    & $appcmd $Args
-    if ($LASTEXITCODE -ne 0)
-    {
-        throw "Falha ao executar: $( $Args -join ' ' )"
-    }
-}
+& $appcmd set config -section:httpCompression /-"staticTypes.[mimeType='application/x-ms-application']" /commit:apphost
+& $appcmd set config -section:httpCompression /+"staticTypes.[mimeType='application/x-ms-application',enabled='true']" /commit:apphost
 
-Write-Host "Desbloqueando seção (opcional)..." -ForegroundColor Cyan
-Run-AppCmd @('unlock', 'config', '-section:system.webServer/httpCompression')
+& $appcmd set config -section:httpCompression /-"staticTypes.[mimeType='application/x-ms-manifest']" /commit:apphost
+& $appcmd set config -section:httpCompression /+"staticTypes.[mimeType='application/x-ms-manifest',enabled='true']" /commit:apphost
 
-Write-Host "Atualizando staticTypes em httpCompression..." -ForegroundColor Cyan
-# application/octet-stream
-Run-AppCmd @('set', 'config', '-section:httpCompression',
-'/-"staticTypes.[mimeType=''application/octet-stream'']"', '/commit:apphost')
-Run-AppCmd @('set', 'config', '-section:httpCompression',
-'/+"staticTypes.[mimeType=''application/octet-stream'',enabled=''true'']"', '/commit:apphost')
+# (Opcional) garantir flags de compressão
+& $appcmd set config -section:urlCompression /doStaticCompression:"True" /doDynamicCompression:"True" /commit:apphost
 
-# application/x-ms-application
-Run-AppCmd @('set', 'config', '-section:httpCompression',
-'/-"staticTypes.[mimeType=''application/x-ms-application'']"', '/commit:apphost')
-Run-AppCmd @('set', 'config', '-section:httpCompression',
-'/+"staticTypes.[mimeType=''application/x-ms-application'',enabled=''true'']"', '/commit:apphost')
+# Configurar frequentHitThreshold
+& $appcmd set config -section:system.webServer/serverRuntime -frequentHitThreshold:1
 
-# application/x-ms-manifest
-Run-AppCmd @('set', 'config', '-section:httpCompression',
-'/-"staticTypes.[mimeType=''application/x-ms-manifest'']"', '/commit:apphost')
-Run-AppCmd @('set', 'config', '-section:httpCompression',
-'/+"staticTypes.[mimeType=''application/x-ms-manifest'',enabled=''true'']"', '/commit:apphost')
-
-Write-Host "Garantindo flags de compressão (estática e dinâmica)..." -ForegroundColor Cyan
-Run-AppCmd @('set', 'config', '-section:urlCompression',
-'/doStaticCompression:True', '/doDynamicCompression:True', '/commit:apphost')
-
-Write-Host "Ajustando serverRuntime..." -ForegroundColor Cyan
-Run-AppCmd @('set', 'config', '-section:system.webServer/serverRuntime', '-frequentHitThreshold:1')
-Run-AppCmd @('set', 'config', '-section:system.webServer/serverRuntime', '-frequentHitTimePeriod:00:01:00')
+# Configurar frequentHitTimePeriod
+& $appcmd set config -section:system.webServer/serverRuntime -frequentHitTimePeriod:00:01:00
 
 # === configuracao iis gzip fim
 
