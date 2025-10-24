@@ -1,10 +1,5 @@
 # exemplos de como chamar o script
 
-# $Version = "1.2.3.4"; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest https://raw.githubusercontent.com/hcavazin/scripts/master/update-zins.ps1 -UseBasicParsing | Invoke-Expression;
-
-# $Version = "1.2.3.4"; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest http://127.0.0.1:5500//update-zins.ps1 -UseBasicParsing | Invoke-Expression;
-
-
 # verificar se variavel $Version foi definida, se nao foi exibir mensagem e parar execucao do script
 if (-not $Version)
 {
@@ -24,8 +19,7 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltinRole]::Administra
     throw "Este script precisa ser executado como Administrador."
 }
 
-# baixar arquivo https://raw.githubusercontent.com/hcavazin/scripts/master/index.html
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/hcavazin/scripts/master/index.html" -OutFile "C:\Zins\index.html"
+Invoke-WebRequest -Uri "https://zinspublic.blob.core.windows.net/updates/script/index.html" -OutFile "C:\Zins\index.html"
 
 # ir para diretorio C:\Zins
 Set-Location C:\Zins
@@ -130,7 +124,7 @@ if (-not (Test-Path $appcmd))
 }
 
 # (Opcional) garantir que a seção não está bloqueada para sites
- & $appcmd unlock config -section:system.webServer/httpCompression
+& $appcmd unlock config -section:system.webServer/httpCompression
 
 # Adicionar tipos estáticos (sem duplicar)
 & $appcmd set config -section:httpCompression /-"staticTypes.[mimeType='application/octet-stream']" /commit:apphost
