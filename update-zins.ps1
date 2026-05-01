@@ -1,4 +1,4 @@
-# exemplos de como chamar o script
+﻿# exemplos de como chamar o script
 
 # verificar se variavel $Version foi definida, se nao foi exibir mensagem e parar execucao do script
 if (-not $Version)
