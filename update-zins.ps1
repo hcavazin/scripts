@@ -171,4 +171,5 @@ if (-not (Test-Path $appcmd))
 
 # === configuracao iis gzip fim
 
+Clear-Host
 Write-Host "Concluído com sucesso." -ForegroundColor Green
