@@ -77,6 +77,12 @@ $baseUrlCamServer = "https://zinspublic.blob.core.windows.net/updates/zins/ZinsC
 $cacheDir = "C:\Zins\_update-cache"
 if (-not (Test-Path $cacheDir)) { New-Item -Path $cacheDir -ItemType Directory | Out-Null }
 
+# limpar versoes antigas do cache antes de baixar — libera espaco e evita
+# acumulo se a execucao falhar antes do final
+Get-ChildItem -Path $cacheDir -Filter "Zins*-*.7z" | Where-Object {
+    $_.Name -notlike "*-$Version.7z"
+} | Remove-Item -Force
+
 $downloadPathTransceiver = "$cacheDir\ZinsTransceiver-$Version.7z"
 $downloadPathProcessor = "$cacheDir\ZinsProcessor-$Version.7z"
 $downloadPathWorkstation = "$cacheDir\ZinsWorkstation-$Version.7z"
@@ -202,12 +208,6 @@ if (Get-Service -Name ZinsCamServer -ErrorAction SilentlyContinue)
 {
     Start-Service -Name ZinsCamServer
 }
-
-# nota: .7z baixados ficam em $cacheDir como cache para re-execucao da mesma versao;
-# versoes antigas sao removidas automaticamente abaixo
-Get-ChildItem -Path $cacheDir -Filter "Zins*-*.7z" | Where-Object {
-    $_.Name -notlike "*-$Version.7z"
-} | Remove-Item -Force
 
 # === configuracao iis gzip inicio
 
