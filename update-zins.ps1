@@ -51,10 +51,11 @@ Remove-Directory -Path "C:\Zins\Processor2"
 Remove-Directory -Path "C:\Zins\Transceiver2"
 Remove-Directory -Path "C:\Zins\Workstation2"
 
-# remover pastas novas: ZinsProcessor, ZinsTransceiver, ZinsWorkstation
-Remove-Directory -Path "C:\Zins\ZinsProcessor"
-Remove-Directory -Path "C:\Zins\ZinsTransceiver"
-Remove-Directory -Path "C:\Zins\ZinsWorkstation"
+# remover pastas temp de execucoes anteriores que possam ter falhado no meio
+Remove-Directory -Path "C:\Zins\ZinsProcessor-new"
+Remove-Directory -Path "C:\Zins\ZinsTransceiver-new"
+Remove-Directory -Path "C:\Zins\ZinsWorkstation-new"
+Remove-Directory -Path "C:\Zins\ZinsCamServer-new"
 
 $baseUrlTransceiver = "https://zinspublic.blob.core.windows.net/updates/zins/ZinsTransceiver-$Version.7z"
 $baseUrlProcessor = "https://zinspublic.blob.core.windows.net/updates/zins/ZinsProcessor-$Version.7z"
@@ -80,7 +81,21 @@ Invoke-WebRequest -Uri $baseUrlWorkstation -OutFile $downloadPathWorkstation
 Write-Host "Downloading $baseUrlCamServer"
 Invoke-WebRequest -Uri $baseUrlCamServer -OutFile $downloadPathCamServer
 
-# Stop ZinsCamServer service if it is running
+# extrair em pastas temp (-new) — assim, se outro update rodar concorrente,
+# nao ve estado parcial nas pastas finais (Zins* sao ClickOnce)
+& $7zaPath x $downloadPathTransceiver -o"C:\Zins\ZinsTransceiver-new" -y
+& $7zaPath x $downloadPathProcessor -o"C:\Zins\ZinsProcessor-new" -y
+& $7zaPath x $downloadPathWorkstation -o"C:\Zins\ZinsWorkstation-new" -y
+& $7zaPath x $downloadPathCamServer -o"C:\Zins\ZinsCamServer-new" -y
+
+# remover arquivo ZinsCamServerProxy.runtimeconfig.json antes do swap
+$runtimeConfigPath = "C:\Zins\ZinsCamServer-new\ZinsCamServerProxy.runtimeconfig.json"
+if (Test-Path $runtimeConfigPath)
+{
+    Remove-Item -Path $runtimeConfigPath -Force
+}
+
+# Stop ZinsCamServer service if it is running (necessario antes de renomear pasta)
 if (Get-Service -Name ZinsCamServer -ErrorAction SilentlyContinue)
 {
     Stop-Service -Name ZinsCamServer
@@ -89,18 +104,27 @@ if (Get-Service -Name ZinsCamServer -ErrorAction SilentlyContinue)
 # pegar todos os processos nginx.exe que estão na pasta C:\Zins\, imprimir caminho completo dos processos e matar
 Get-Process | Where-Object { $_.ProcessName -eq 'nginx' -and $_.Path -like 'C:\Zins\*' } | ForEach-Object { Write-Host $_.Path; Stop-Process -Id $_.Id -Force }
 
-# extrair arquivos
-& $7zaPath x $downloadPathTransceiver -o"C:\Zins" -y
-& $7zaPath x $downloadPathProcessor -o"C:\Zins" -y
-& $7zaPath x $downloadPathWorkstation -o"C:\Zins" -y
-& $7zaPath x $downloadPathCamServer -o"C:\Zins" -y
-
-# remover arquivo ZinsCamServer\ZinsCamServerProxy.runtimeconfig.json
-$runtimeConfigPath = "C:\Zins\ZinsCamServer\ZinsCamServerProxy.runtimeconfig.json"
-if (Test-Path $runtimeConfigPath)
+# swap atomico: remove pasta antiga e renomeia -new -> nome final
+function Swap-Directory
 {
-    Remove-Item -Path $runtimeConfigPath -Force
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$FinalPath,
+        [Parameter(Mandatory = $true)]
+        [string]$NewPath
+    )
+
+    if (Test-Path $FinalPath)
+    {
+        Remove-Item -Path $FinalPath -Recurse -Force
+    }
+    Rename-Item -Path $NewPath -NewName (Split-Path $FinalPath -Leaf)
 }
+
+Swap-Directory -FinalPath "C:\Zins\ZinsTransceiver" -NewPath "C:\Zins\ZinsTransceiver-new"
+Swap-Directory -FinalPath "C:\Zins\ZinsProcessor"   -NewPath "C:\Zins\ZinsProcessor-new"
+Swap-Directory -FinalPath "C:\Zins\ZinsWorkstation" -NewPath "C:\Zins\ZinsWorkstation-new"
+Swap-Directory -FinalPath "C:\Zins\ZinsCamServer"   -NewPath "C:\Zins\ZinsCamServer-new"
 
 # Start ZinsCamServer service if it is not running
 if (Get-Service -Name ZinsCamServer -ErrorAction SilentlyContinue)

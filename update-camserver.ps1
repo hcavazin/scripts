@@ -4,12 +4,23 @@
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-if (!(Test-Path "C:\Zins\ZinsCamServer")) {
-    New-Item "C:\Zins\ZinsCamServer" -ItemType Directory
+$downloadPath = "C:\Zins\_ZinsCamServer-download.zip"
+$tempExtractPath = "C:\Zins\ZinsCamServer-new"
+$finalPath = "C:\Zins\ZinsCamServer"
+
+# limpar artefatos de execucoes anteriores que possam ter falhado no meio
+if (Test-Path $tempExtractPath) {
+    Remove-Item $tempExtractPath -Recurse -Force
+}
+if (Test-Path $downloadPath) {
+    Remove-Item $downloadPath -Force
 }
 
 Write-Host "Baixando CamServer..."
-Invoke-WebRequest "http://f.zins.com.br/updates/zins/ZinsCamServer.zip" -UseBasicParsing -OutFile "C:\Zins\ZinsCamServer\_download.zip"
+Invoke-WebRequest "http://f.zins.com.br/updates/zins/ZinsCamServer.zip" -UseBasicParsing -OutFile $downloadPath
+
+Write-Host "Extraindo arquivos..."
+Expand-Archive $downloadPath $tempExtractPath -Force
 
 Write-Host "Parando CamServer..."
 net stop ZinsCamServer
@@ -19,12 +30,13 @@ net stop ZinsCamServer
 
 timeout 3
 
-Write-Host "Extraindo arquivos..."
-Expand-Archive "C:\Zins\ZinsCamServer\_download.zip" "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" -Force
-Remove-Item "C:\Zins\ZinsCamServer\*.dll"
-Remove-Item "C:\Zins\ZinsCamServer\*.exe"
-xcopy "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" "C:\Zins\ZinsCamServer" /q/d/s/y
-Remove-Item "C:\Zins\ZinsCamServer\_ZinsCamServerExtTemp" -Recurse -Force
+# swap atomico: remove pasta antiga e renomeia -new -> nome final
+if (Test-Path $finalPath) {
+    Remove-Item $finalPath -Recurse -Force
+}
+Rename-Item -Path $tempExtractPath -NewName (Split-Path $finalPath -Leaf)
+
+Remove-Item $downloadPath -Force
 
 Write-Host "Iniciando CamServer..."
 net start ZinsCamServer
